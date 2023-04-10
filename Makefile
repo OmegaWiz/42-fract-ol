@@ -6,7 +6,7 @@
 #    By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/10 08:16:18 by kkaiyawo          #+#    #+#              #
-#    Updated: 2023/04/10 08:38:55 by kkaiyawo         ###   ########.fr        #
+#    Updated: 2023/04/10 15:51:50 by kkaiyawo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRC_DIR			=	./src/
 LIB_DIR			=	./lib/
 BUILD_DIR		=	./build/
 
-SRCS			=	${addprefix ${BUILD_DIR},${SRCS}}
+SRC				=	${addprefix ${BUILD_DIR},${SRCS}}
 OBJ				=	${SRC:.c=.o}
 
 CC				=	gcc
@@ -44,6 +44,6 @@ ${BUILD_DIR}%.o:${SRC_DIR}%.c
 					${CC} -Imlx -c -o $@ $^
 
 ${NAME}:		${OBJ}
-					${CC} ${OBJ} -Lmlx -lmlx -framework OpenGL -framework AppKit ${wildcard ${LIB_DIR}/*/*.a} -o ${NAME} ${CFLAG}
+					${CC} ${OBJ} -Lmlx -lmlx -framework OpenGL -framework AppKit ${wildcard ${LIB_DIR}*/*.a} -o ${NAME} ${CFLAG}
 
 .PHONY:			all library clean fclean re
