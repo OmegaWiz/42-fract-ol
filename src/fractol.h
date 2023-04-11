@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 13:33:02 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 15:17:14 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 # define FRACTOL_H
 
 # include <math.h>
-
-# include <stdio.h>
 
 # include "../mlx/mlx.h"
 # include "../lib/libft/libft.h"
@@ -42,6 +40,11 @@ typedef struct s_vars {
 	void	*win;
 }	t_vars;
 
+typedef struct s_z {
+	float	x;
+	float	y;
+} t_z;
+
 typedef struct s_dim {
 	float	x;
 	float	y;
@@ -49,5 +52,6 @@ typedef struct s_dim {
 }	t_dim;
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+int		is_mdb(t_z c);
 
 #endif

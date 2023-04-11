@@ -6,7 +6,7 @@
 #    By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/10 08:16:18 by kkaiyawo          #+#    #+#              #
-#    Updated: 2023/04/11 08:38:48 by kkaiyawo         ###   ########.fr        #
+#    Updated: 2023/04/11 13:56:39 by kkaiyawo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,6 @@ ${BUILD_DIR}%.o:${SRC_DIR}%.c
 					${CC} -Imlx -c -o $@ $^
 
 ${NAME}:		${OBJ}
-					${CC} ${OBJ} -Lmlx -lmlx -framework OpenGL -framework AppKit ${wildcard ${LIB_DIR}*/*.a} -o ${NAME} ${CFLAG}
+					${CC} ${OBJ} -Lmlx -lmlx -lm -framework OpenGL -framework AppKit ${wildcard ${LIB_DIR}*/*.a} -o ${NAME} ${CFLAG}
 
 .PHONY:			all library clean fclean re
