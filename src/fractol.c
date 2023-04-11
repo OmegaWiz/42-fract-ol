@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 15:17:35 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 15:35:16 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,23 @@ int	is_circle(t_dim d, float x, float y)
 	return (0);
 }
 
-void	draw(t_data *img, int (*isShape)(t_dim, float, float), t_dim d, int color)
+void	draw(t_data *img, int (*isShape)(t_z), int color)
 {
-	int	i;
-	int	j;
+	t_z	z;
 
-	i = 1;
-	while (i < WIN_WIDTH)
+	z.x = -5;
+	while (z.x <= 5)
 	{
-		j = 1;
-		while (j < WIN_HEIGHT)
+		z.y = -5;
+		while (z.y <= 5)
 		{
-			if (isShape(d, i, j))
+			if (isShape(z))
 			{
-				my_mlx_pixel_put(img, i, j, color);
+				my_mlx_pixel_put(img, (z.x + 5.01) * 100, (z.y + 5.01) * 100, color);
 			}
-			j++;
+			z.y += 0.01;
 		}
-		i++;
+		z.x += 0.01;
 	}
 }
 
@@ -75,7 +74,7 @@ int	main(int argc, char **argv)
 	dim.x = 500;
 	dim.y = 500;
 	dim.s = 250;
-	draw(&img, is_circle, dim, 0xCDD6F4);
+	draw(&img, is_mdb, 0xFF0000);
 	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
 	mlx_key_hook(vars.win, close_esc, (void *) &vars);
 	mlx_loop(vars.mlx);

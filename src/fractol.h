@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 15:17:14 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 15:23:23 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 # include "../lib/libft/libft.h"
 
 # ifndef WIN_WIDTH
-#  define WIN_WIDTH 1920
+#  define WIN_WIDTH 1000
 # endif
 
 # ifndef WIN_HEIGHT
-#  define WIN_HEIGHT 1080
+#  define WIN_HEIGHT 1000
 # endif
 
 typedef struct s_data {
@@ -43,7 +43,7 @@ typedef struct s_vars {
 typedef struct s_z {
 	float	x;
 	float	y;
-} t_z;
+}	t_z;
 
 typedef struct s_dim {
 	float	x;
@@ -52,6 +52,7 @@ typedef struct s_dim {
 }	t_dim;
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-int		is_mdb(t_z c);
+float	mandelbrot(int it, t_z z, t_z c);
+int		is_mdb(t_z p);
 
 #endif
