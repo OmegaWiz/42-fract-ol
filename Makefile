@@ -6,13 +6,13 @@
 #    By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/10 08:16:18 by kkaiyawo          #+#    #+#              #
-#    Updated: 2023/04/10 15:51:50 by kkaiyawo         ###   ########.fr        #
+#    Updated: 2023/04/11 08:38:48 by kkaiyawo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	fractol
 
-SRCS			=	fractol.c
+SRCS			=	fractol.c mlx_utils.c
 
 SRC_DIR			=	./src/
 LIB_DIR			=	./lib/
