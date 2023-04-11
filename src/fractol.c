@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 08:57:55 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 09:03:24 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int	main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 1920, 1080, "minilibx test");
-	img.img = mlx_new_image(mlx, 1920, 1080);
+	mlx_win = mlx_new_window(mlx, WIN_WIDTH, WIN_HEIGHT, "minilibx test");
+	img.img = mlx_new_image(mlx, WIN_WIDTH, WIN_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bpp, &img.line_len, &img.endian);
 	//my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
 	write_square(&img, 100, 100, 100);
