@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 15:23:23 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 16:52:50 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,5 @@ typedef struct s_z {
 	float	x;
 	float	y;
 }	t_z;
-
-typedef struct s_dim {
-	float	x;
-	float	y;
-	float	s;
-}	t_dim;
-
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-float	mandelbrot(int it, t_z z, t_z c);
-int		is_mdb(t_z p);
 
 #endif

@@ -6,41 +6,65 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 15:35:16 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 16:55:00 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
 /*
-x	horizontal	width
-y	vertical	height
+x	horizontal	row		height
+y	vertical	column	width
 */
 
-int	is_circle(t_dim d, float x, float y)
+void	my_mlx_pixel_put(t_data *data, t_z px, int color)
 {
-	if (pow(x - d.x, 2) + pow(y - d.y, 2) <= pow(d.s, 2))
-		return (1);
+	char	*dst;
+
+	dst = data->addr + ((int) px.y * data->line_len + (int) px.x * (data->bpp / 8));
+	*(unsigned int *)dst = color;
+}
+
+int	mandelbrot(t_z c, t_z z)
+{
+	int	i;
+	t_z	k;
+
+	i = 1;
+	while (i < 10)
+	{
+		k.x = pow(z.x, 2) - pow(z.y, 2) + c.x;
+		k.y = (2 * z.x * z.y) + c.y;
+		if (sqrt(pow(k.x, 2) + pow(k.y, 2)) > 2)
+			return (i);
+		z = k;
+		i++;
+	}
 	return (0);
 }
 
-void	draw(t_data *img, int (*isShape)(t_z), int color)
+void	draw(t_data *img, int (*iter)(t_z, t_z), int *color, t_z dimen, t_z z)
 {
-	t_z	z;
+	t_z	btml;
+	t_z	p;
+	t_z	pixel;
+	int	ci;
 
-	z.x = -5;
-	while (z.x <= 5)
+	btml.x = dimen.x / -2;
+	btml.y = dimen.y / -2;
+	p.x = btml.x;
+	while (p.x < dimen.x / 2)
 	{
-		z.y = -5;
-		while (z.y <= 5)
+		p.y = btml.y;
+		while (p.y < dimen.y / 2)
 		{
-			if (isShape(z))
-			{
-				my_mlx_pixel_put(img, (z.x + 5.01) * 100, (z.y + 5.01) * 100, color);
-			}
-			z.y += 0.01;
+			ci = iter(p, z);
+			pixel.x = ((p.x - btml.x) / dimen.x) * WIN_HEIGHT + 1;
+			pixel.y = ((p.y - btml.y) / dimen.y) * WIN_WIDTH + 1;
+			my_mlx_pixel_put(img, pixel, color[ci]);
+			p.y += dimen.y / WIN_WIDTH;
 		}
-		z.x += 0.01;
+		p.x += dimen.x / WIN_HEIGHT;
 	}
 }
 
@@ -56,25 +80,32 @@ int	close_esc(int keycode, void *param)
 	}
 	return (0);
 }
+//my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
 
 int	main(int argc, char **argv)
 {
 	t_data	img;
-	t_dim	dim;
 	t_vars	vars;
+	t_z		dimension;
+	t_z		m_init;
+	int		color[] = {0, 0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66};
 
+	//init
 	(void) argc;
 	(void) argv;
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, WIN_WIDTH, WIN_HEIGHT, "minilibx test");
 	img.img = mlx_new_image(vars.mlx, WIN_WIDTH, WIN_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bpp, &img.line_len, &img.endian);
-	//my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
-	//write_square(&img, 100, 100, 100);
-	dim.x = 500;
-	dim.y = 500;
-	dim.s = 250;
-	draw(&img, is_mdb, 0xFF0000);
+	//load mandelbrot
+	m_init.x = 0;
+	m_init.y = 0;
+	//set limit for plotting
+	dimension.x = 2;
+	dimension.y = 2;
+	//put color to image
+	draw(&img, mandelbrot, color, dimension, m_init);
+	//draw on screen
 	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
 	mlx_key_hook(vars.win, close_esc, (void *) &vars);
 	mlx_loop(vars.mlx);
