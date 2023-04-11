@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 09:02:58 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 09:12:25 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ typedef struct s_data {
 	int		line_len;
 	int		endian;
 }	t_data;
+
+typedef struct s_dim {
+	int	x;
+	int	y;
+	int	c;
+}	t_dim;
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 

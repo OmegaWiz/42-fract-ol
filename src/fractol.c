@@ -6,11 +6,16 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 09:03:24 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 09:12:35 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+/*
+x	horizontal	width
+y	vertical	height
+*/
 
 void	write_square(t_data *img, int x, int y, int n)
 {
@@ -38,6 +43,25 @@ void	write_square(t_data *img, int x, int y, int n)
 	while (i <= n)
 	{
 		my_mlx_pixel_put(img, x + n, y + i, 0x00FFFFFF);
+		i++;
+	}
+}
+
+void	draw(t_data *img, bool (*isShape)(t_dim d), t_dim d, int color)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (i < WIN_WIDTH)
+	{
+		while (j < WIN_HEIGHT)
+		{
+			if (isShape(d))
+				my_mlx_pixel_put(img, d.x, d.y, color);
+			j++;
+		}
 		i++;
 	}
 }
