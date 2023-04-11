@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 16:55:00 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 16:57:13 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ void	draw(t_data *img, int (*iter)(t_z, t_z), int *color, t_z dimen, t_z z)
 		while (p.y < dimen.y / 2)
 		{
 			ci = iter(p, z);
-			pixel.x = ((p.x - btml.x) / dimen.x) * WIN_HEIGHT + 1;
-			pixel.y = ((p.y - btml.y) / dimen.y) * WIN_WIDTH + 1;
+			pixel.x = (int) ((p.x - btml.x) / dimen.x) * WIN_HEIGHT + 1;
+			pixel.y = (int) ((p.y - btml.y) / dimen.y) * WIN_WIDTH + 1;
 			my_mlx_pixel_put(img, pixel, color[ci]);
 			p.y += dimen.y / WIN_WIDTH;
 		}
@@ -88,7 +88,7 @@ int	main(int argc, char **argv)
 	t_vars	vars;
 	t_z		dimension;
 	t_z		m_init;
-	int		color[] = {0, 0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66};
+	int		color[] = {0, 0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11};
 
 	//init
 	(void) argc;
