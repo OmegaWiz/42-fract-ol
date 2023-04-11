@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 09:25:18 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 13:33:02 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ typedef struct s_data {
 	int		line_len;
 	int		endian;
 }	t_data;
+
+typedef struct s_vars {
+	void	*mlx;
+	void	*win;
+}	t_vars;
 
 typedef struct s_dim {
 	float	x;
