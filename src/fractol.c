@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 13:00:03 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/11 13:02:00 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,36 +16,6 @@
 x	horizontal	width
 y	vertical	height
 */
-
-void	write_square(t_data *img, int x, int y, int n)
-{
-	int	i;
-
-	i = 0;
-	while (i <= n)
-	{
-		my_mlx_pixel_put(img, x + i, y, 0x00FFFFFF);
-		i++;
-	}
-	i = 0;
-	while (i <= n)
-	{
-		my_mlx_pixel_put(img, x + i, y + n, 0x00FFFFFF);
-		i++;
-	}
-	i = 0;
-	while (i <= n)
-	{
-		my_mlx_pixel_put(img, x, y + i, 0x00FFFFFF);
-		i++;
-	}
-	i = 0;
-	while (i <= n)
-	{
-		my_mlx_pixel_put(img, x + n, y + i, 0x00FFFFFF);
-		i++;
-	}
-}
 
 int	is_circle(t_dim d, float x, float y)
 {
