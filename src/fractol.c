@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/12 10:38:35 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/12 15:39:56 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	mandelbrot(t_z c, t_z z)
 	return (0);
 }
 
-void	draw(t_data *img, int (*iter)(t_z, t_z), t_z mn, t_z mx, t_z z)
+void	draw(t_vars *vars, int (*iter)(t_z, t_z))
 {
 	t_z		p;
 	t_z		c;
@@ -60,25 +60,24 @@ void	draw(t_data *img, int (*iter)(t_z, t_z), t_z mn, t_z mx, t_z z)
 	while (p.x < WIN_WIDTH)
 	{
 		p.y = 0;
-		c.x = ((p.x / WIN_WIDTH) * (mx.x - mn.x)) + mn.x;
+		c.x = ((p.x / WIN_WIDTH) * (vars->mx.x - vars->mn.x)) + vars->mn.x;
 		while (p.y < WIN_HEIGHT)
 		{
-			c.y = (((WIN_HEIGHT - p.y) / WIN_HEIGHT) * (mx.y - mn.y)) + mn.y;
-			color = iter(c, z);
+			c.y = (WIN_HEIGHT - p.y) / WIN_HEIGHT;
+			c.y *= (vars->mx.y - vars->mn.y);
+			c.y += vars->mn.y;
+			color = iter(c, vars->mi);
 			if (color > 0)
-				color = (float) 0xFFFFFF / color;
-			my_mlx_pixel_put(img, p, color);
+				color = (float) 0xcdd6f4 / color;
+			my_mlx_pixel_put(&(vars->img), p, color);
 			p.y++;
 		}
 		p.x++;
 	}
 }
 
-int	close_esc(int keycode, void *param)
+int	close_esc(int keycode, t_vars *vars)
 {
-	t_vars	*vars;
-
-	vars = (t_vars *) param;
 	if (keycode == 53)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);
@@ -86,36 +85,65 @@ int	close_esc(int keycode, void *param)
 	}
 	return (0);
 }
-//my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
+
+/*
+4 - scroll up
+5 - scroll down
+*/
+int	zoom(int keycode, t_vars *vars)
+{
+	float	zoomidx;
+	t_z		cen;
+	t_z		sz;
+
+	zoomidx = 1;
+	if (keycode == 4)
+		zoomidx = 1.1;
+	if (keycode == 5)
+		zoomidx = 0.9;
+	cen.x = (vars->mx.x + vars->mn.x) / 2;
+	cen.y = (vars->mx.y + vars->mn.y) / 2;
+	sz.x = (vars->mx.x - vars->mn.x) / 2;
+	sz.y = (vars->mx.y - vars->mn.y) / 2;
+	vars->mx.x = cen.x + (sz.x * zoomidx);
+	vars->mx.y = cen.y + (sz.y * zoomidx);
+	vars->mn.x = cen.x - (sz.x * zoomidx);
+	vars->mn.y = cen.y - (sz.y * zoomidx);
+	draw(vars, mandelbrot);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
+	return (0);
+}
+
+void	init(t_vars *vars)
+{
+	t_data	*d;
+
+	vars->mlx = mlx_init();
+	vars->win = mlx_new_window(vars->mlx, WIN_WIDTH, WIN_HEIGHT, "fractol");
+	d = &(vars->img);
+	d->img = mlx_new_image(vars->mlx, WIN_WIDTH, WIN_HEIGHT);
+	d->addr = mlx_get_data_addr(d->img, &(d->bpp), &(d->line_len), &(d->end));
+	vars->mi.x = 0;
+	vars->mi.y = 0;
+	vars->mx.x = 4;
+	vars->mx.y = 2.25;
+	vars->mn.x = vars->mx.x * -1;
+	vars->mn.y = vars->mx.y * -1;
+	mlx_key_hook(vars->win, close_esc, &vars);
+	mlx_mouse_hook(vars->win, zoom, &vars);
+	draw(vars, mandelbrot);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
+	mlx_loop(vars->mlx);
+}
 
 int	main(int argc, char **argv)
 {
-	t_data	img;
 	t_vars	vars;
-	t_z		mx;
-	t_z		m_init;
-	t_z		mn;
 
 	//init
 	(void) argc;
 	(void) argv;
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, WIN_WIDTH, WIN_HEIGHT, "minilibx test");
-	img.img = mlx_new_image(vars.mlx, WIN_WIDTH, WIN_HEIGHT);
-	img.addr = mlx_get_data_addr(img.img, &img.bpp, &img.line_len, &img.endian);
+	init(&vars);
 	//load mandelbrot
-	m_init.x = 0;
-	m_init.y = 0;
-	//set limit for plotting
-	mx.x = 8;
-	mx.y = 4.5;
-	mn.x = -8;
-	mn.y = -4.5;
-	//put color to image
-	draw(&img, mandelbrot, mn, mx, m_init);
-	//draw on screen
-	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
-	mlx_key_hook(vars.win, close_esc, (void *) &vars);
-	mlx_loop(vars.mlx);
 	return (0);
 }

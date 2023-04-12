@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/12 09:33:30 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/12 15:32:32 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,21 @@ typedef struct s_data {
 	char	*addr;
 	int		bpp;
 	int		line_len;
-	int		endian;
+	int		end;
 }	t_data;
-
-typedef struct s_vars {
-	void	*mlx;
-	void	*win;
-}	t_vars;
 
 typedef struct s_z {
 	float	x;
 	float	y;
 }	t_z;
+
+typedef struct s_vars {
+	void	*mlx;
+	void	*win;
+	t_data	img;
+	t_z		mn;
+	t_z		mx;
+	t_z		mi;
+}	t_vars;
 
 #endif
