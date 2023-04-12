@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:54:30 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/11 16:57:13 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/12 08:54:46 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,12 @@ y	vertical	column	width
 void	my_mlx_pixel_put(t_data *data, t_z px, int color)
 {
 	char	*dst;
+	int		x;
+	int		y;
 
-	dst = data->addr + ((int) px.y * data->line_len + (int) px.x * (data->bpp / 8));
+	y = (int) px.y;
+	x = (int) px.x;
+	dst = data->addr + (y * data->line_len + x * (data->bpp / 8));
 	*(unsigned int *)dst = color;
 }
 
@@ -31,13 +35,14 @@ int	mandelbrot(t_z c, t_z z)
 	t_z	k;
 
 	i = 1;
-	while (i < 10)
+	while (i < 30)
 	{
 		k.x = pow(z.x, 2) - pow(z.y, 2) + c.x;
 		k.y = (2 * z.x * z.y) + c.y;
 		if (sqrt(pow(k.x, 2) + pow(k.y, 2)) > 2)
 			return (i);
-		z = k;
+		z.x = k.x;
+		z.y = k.y;
 		i++;
 	}
 	return (0);
@@ -59,9 +64,13 @@ void	draw(t_data *img, int (*iter)(t_z, t_z), int *color, t_z dimen, t_z z)
 		while (p.y < dimen.y / 2)
 		{
 			ci = iter(p, z);
-			pixel.x = (int) ((p.x - btml.x) / dimen.x) * WIN_HEIGHT + 1;
-			pixel.y = (int) ((p.y - btml.y) / dimen.y) * WIN_WIDTH + 1;
-			my_mlx_pixel_put(img, pixel, color[ci]);
+			pixel.x = ((p.x - btml.x) / dimen.x) * WIN_HEIGHT;
+			pixel.y = ((p.y - btml.y) / dimen.y) * WIN_WIDTH;
+			if (ci > 0)
+				ci = 0x990000;
+			else
+				ci = 0x000000;
+			my_mlx_pixel_put(img, pixel, ci);
 			p.y += dimen.y / WIN_WIDTH;
 		}
 		p.x += dimen.x / WIN_HEIGHT;
