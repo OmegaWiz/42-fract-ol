@@ -47,3 +47,32 @@ int	old_is_mdb(t_z p)
 		return (1);
 	return (0);
 }
+
+void	old_draw(t_data *img, int (*iter)(t_z, t_z), int *color, t_z dimen, t_z z)
+{
+	t_z	btml;
+	t_z	p;
+	t_z	pixel;
+	int	ci;
+
+	btml.x = dimen.x / -2;
+	btml.y = dimen.y / -2;
+	p.x = btml.x;
+	pixel.x = ceil(((p.x - btml.x) / dimen.x) * WIN_WIDTH);
+	while ((int) pixel.x < WIN_WIDTH)
+	{
+		p.y = btml.y;
+		pixel.y = ceil(((p.y - btml.y) / dimen.y) * WIN_HEIGHT);
+		while ((int) pixel.y < WIN_HEIGHT)
+		{
+			ci = iter(p, z);
+			if (ci > 0)
+				ci = (float) 0xFFFFFF / ci;
+			my_mlx_pixel_put(img, pixel, ci);
+			p.y += dimen.y / WIN_HEIGHT;
+			pixel.y = ceil(((p.y - btml.y) / dimen.y) * WIN_HEIGHT);
+		}
+		p.x += dimen.x / WIN_WIDTH;
+		pixel.x = ceil(((p.x - btml.x) / dimen.x) * WIN_WIDTH);
+	}
+}
