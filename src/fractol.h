@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/12 15:32:32 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/14 12:27:51 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 # include "../lib/libft/libft.h"
 
 # ifndef WIN_WIDTH
-#  define WIN_WIDTH 1920
+#  define WIN_WIDTH 500
 # endif
 
 # ifndef WIN_HEIGHT
-#  define WIN_HEIGHT 1080
+#  define WIN_HEIGHT 500
 # endif
 
 typedef struct s_data {

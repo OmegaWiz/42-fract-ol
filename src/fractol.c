@@ -37,11 +37,11 @@ int	mandelbrot(t_z c, t_z z)
 	t_z	k;
 
 	i = 1;
-	while (i < 100)
+	while (i < 30)
 	{
 		k.x = pow(z.x, 2) - pow(z.y, 2) + c.x;
 		k.y = (2 * z.x * z.y) + c.y;
-		if (sqrt(pow(k.x, 2) + pow(k.y, 2)) > 2)
+		if (pow(k.x, 2) + pow(k.y, 2) > 4)
 			return (i);
 		z.x = k.x;
 		z.y = k.y;
@@ -74,6 +74,15 @@ void	draw(t_vars *vars, int (*iter)(t_z, t_z))
 		}
 		p.x++;
 	}
+}
+
+int	close_x(void* param)
+{
+	t_vars	*vars;
+
+	vars = (t_vars *) param;
+	mlx_destroy_window(vars->mlx, vars->win);
+	exit(0);
 }
 
 int	close_esc(int keycode, void* param)
@@ -141,13 +150,14 @@ void	init(t_vars *vars)
 	d->addr = mlx_get_data_addr(d->img, &(d->bpp), &(d->line_len), &(d->end));
 	vars->mi.x = 0;
 	vars->mi.y = 0;
-	vars->mx.x = 4;
-	vars->mx.y = 2.25;
+	vars->mx.y = 2;
+	vars->mx.x = (vars->mx.y) * (WIN_WIDTH / WIN_HEIGHT);
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
 	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
+	mlx_hook(vars->win, 17, 0, close_x, (void *) vars);
 	mlx_key_hook(vars->win, close_esc, (void *) vars);
 	mlx_mouse_hook(vars->win, zoom, (void *) vars);
 	mlx_loop(vars->mlx);
