@@ -76,11 +76,12 @@ void	draw(t_vars *vars, int (*iter)(t_z, t_z))
 	}
 }
 
-int	close_esc(int keycode, void *param)
+int	close_esc(int keycode, void* param)
 {
 	t_vars	*vars;
 
 	vars = (t_vars *) param;
+	printf("Pressed: %d\n", keycode);
 	if (keycode == 53)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);
@@ -93,7 +94,7 @@ int	close_esc(int keycode, void *param)
 4 - scroll up
 5 - scroll down
 */
-int	zoom(int button, void *param)
+int	zoom(int button, int x, int y, void* param)
 {
 	float	zoomidx;
 	t_z		cen;
@@ -108,15 +109,17 @@ int	zoom(int button, void *param)
 		zoomidx = 1.1;
 	if (button == 2)
 		zoomidx = 0.9;
-	cen.x = vars->mn.x + (vars->mx.x - vars->mn.x);
-	cen.y = vars->mn.y + (vars->mx.y - vars->mn.y);
+	printf("Clicked: %d\n", button);
+	printf("%f %f|%f,%f|%f\n", zoomidx, vars->mn.x, vars->mx.x, vars->mn.y, vars->mx.y);
+	cen.x = (vars->mx.x + vars->mn.x) / 2;
+	cen.y = (vars->mx.y + vars->mn.y) / 2;
 	sz.x = (vars->mx.x - vars->mn.x) / 2;
 	sz.y = (vars->mx.y - vars->mn.y) / 2;
 	vars->mx.x = cen.x + (sz.x * zoomidx);
 	vars->mx.y = cen.y + (sz.y * zoomidx);
 	vars->mn.x = cen.x - (sz.x * zoomidx);
 	vars->mn.y = cen.y - (sz.y * zoomidx);
-	printf("%f %f-%f-%f-%f,%f-%f-%f-%f\n", zoomidx, vars->mn.x, vars->mx.x, cen.x, sz.x, vars->mn.y, vars->mx.y, cen.y, sz.y);
+	printf("%f %f|%f|%f|%f,%f|%f|%f|%f\n", zoomidx, vars->mn.x, vars->mx.x, cen.x, sz.x, vars->mn.y, vars->mx.y, cen.y, sz.y);
 	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
@@ -142,11 +145,11 @@ void	init(t_vars *vars)
 	vars->mx.y = 2.25;
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
-	mlx_loop_hook(vars->mlx, do_none, &vars);
-	mlx_key_hook(vars->win, close_esc, &vars);
-	mlx_mouse_hook(vars->win, zoom, &vars);
 	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
+	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
+	mlx_key_hook(vars->win, close_esc, (void *) vars);
+	mlx_mouse_hook(vars->win, zoom, (void *) vars);
 	mlx_loop(vars->mlx);
 }
 
