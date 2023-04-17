@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/17 15:37:31 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:43:49 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 # endif
 
 # define MAX_ITER 80
+# define MAX_COLOR 6
+# define MAX_INIT 2
 
 typedef struct s_data {
 	void	*img;
@@ -55,6 +57,7 @@ typedef struct s_vars {
 	int		color;
 	int		*scheme;
 	int		(*iter)(t_z, t_z);
+	float	zoomidx;
 }	t_vars;
 
 #endif

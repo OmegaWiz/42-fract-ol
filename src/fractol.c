@@ -198,7 +198,6 @@ int	keyb(int keycode, void* param)
 */
 int	zoom(int button, int x, int y, void* param)
 {
-	float	zoomidx;
 	t_vars	*vars;
 	t_z		mouse;
 
@@ -207,15 +206,15 @@ int	zoom(int button, int x, int y, void* param)
 	if (button != 4 && button != 5)
 		return (0);
 	if (button == 4)
-		zoomidx = 1.1;
+		vars->zoomidx = 1.08;
 	if (button == 5)
-		zoomidx = 0.9;
-	mouse.x = vars->mn.x + (float)x / (float)WIN_WIDTH * (vars->mx.x - vars->mn.x);
-	mouse.y = vars->mn.y + (float)y / (float)WIN_HEIGHT * (vars->mx.y - vars->mn.y);
-	vars->mn.x = mouse.x - (zoomidx * (mouse.x - vars->mn.x));
-	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
-	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
-	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
+		vars->zoomidx = 1 / 1.08;
+	mouse.x = vars->mn.x + ((x / (float)WIN_WIDTH) * (vars->mx.x - vars->mn.x));
+	mouse.y = vars->mn.y + ((WIN_HEIGHT - y) / (float)WIN_HEIGHT) * (vars->mx.y - vars->mn.y);
+	vars->mn.x = mouse.x - (vars->zoomidx * (mouse.x - vars->mn.x));
+	vars->mx.x = mouse.x + (vars->zoomidx * (vars->mx.x - mouse.x));
+	vars->mn.y = mouse.y - (vars->zoomidx * (mouse.y - vars->mn.y));
+	vars->mx.y = mouse.y + (vars->zoomidx * (vars->mx.y - mouse.y));
 	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
@@ -237,14 +236,14 @@ void	init(t_vars *vars, int (*iter)(t_z, t_z), t_z mi)
 	d->addr = mlx_get_data_addr(d->img, &(d->bpp), &(d->line_len), &(d->end));
 	vars->mi.x = mi.x;
 	vars->mi.y = mi.y;
-	vars->mx.y = 2;
-	vars->mx.x = (vars->mx.y) * (WIN_WIDTH / WIN_HEIGHT);
+	vars->mx.y = MAX_INIT;
+	vars->mx.x = MAX_INIT * (WIN_WIDTH / WIN_HEIGHT);
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
 	vars->scheme = (int [6]){0xcdd6f4, 0xcad3f5, 0xc6d0f5, 0xff0000, 0x00ff00, 0x0000ff};
 	vars->color = 0;
 	vars->iter = iter;
-
+	vars->zoomidx = 1;
 	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
