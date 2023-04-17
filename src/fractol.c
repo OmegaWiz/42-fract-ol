@@ -85,9 +85,15 @@ int	close_x(void* param)
 	exit(0);
 }
 
+/*
+123-126
+lrud
+*/
 int	close_esc(int keycode, void* param)
 {
 	t_vars	*vars;
+	t_z		sz;
+	float	mult;
 
 	vars = (t_vars *) param;
 	printf("Pressed: %d\n", keycode);
@@ -95,6 +101,26 @@ int	close_esc(int keycode, void* param)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);
 		exit(0);
+	}
+	if (122 < keycode && keycode < 127)
+	{
+		sz.x = vars->mx.x - vars->mn.x;
+		sz.y = vars->mx.y - vars->mn.y;
+		mult = 0.1;
+		if (keycode % 2)
+			mult = -0.1;
+		if (keycode < 125)
+		{
+			vars->mn.x += sz.x * mult;
+			vars->mx.x += sz.x * mult;
+		}
+		else
+		{
+			vars->mn.y += sz.y * mult;
+			vars->mx.y += sz.y * mult;
+		}
+		draw(vars, mandelbrot);
+		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
 	return (0);
 }
@@ -108,9 +134,6 @@ int	zoom(int button, int x, int y, void* param)
 	float	zoomidx;
 	t_vars	*vars;
 	t_z		mouse;
-
-	t_z		cen;
-	t_z		sz;
 
 	vars = (t_vars *) param;
 	printf("Clicked: %d\n", button);
@@ -126,7 +149,6 @@ int	zoom(int button, int x, int y, void* param)
 	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
 	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
 	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
-	printf("%f %f|%f|%f|%f,%f|%f|%f|%f\n", zoomidx, vars->mn.x, vars->mx.x, cen.x, sz.x, vars->mn.y, vars->mx.y, cen.y, sz.y);
 	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
