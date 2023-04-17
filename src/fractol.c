@@ -110,7 +110,7 @@ int	mandelbrot(t_z c, t_z z)
 	return (0);
 }
 
-void	draw(t_vars *vars, int (*iter)(t_z, t_z), float scheme)
+void	draw(t_vars *vars, int (*iter)(t_z, t_z))
 {
 	t_z		p;
 	t_z		c;
@@ -128,7 +128,7 @@ void	draw(t_vars *vars, int (*iter)(t_z, t_z), float scheme)
 			c.y += vars->mn.y;
 			color = iter(c, vars->mi);
 			if (color > 0)
-				color = scheme / color;
+				color = vars->scheme / color;
 			my_mlx_pixel_put(&(vars->img), p, color);
 			p.y++;
 		}
@@ -182,6 +182,13 @@ int	close_esc(int keycode, void* param)
 		draw(vars, julia, vars->colorange[vars->scheme]);
 		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
+	if (keycode == 45)
+	{
+		vars->scheme++;
+		vars->scheme %= 3;
+		draw(vars, mandelbrot, vars->colorange[vars->scheme]);
+		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
+	}
 	return (0);
 }
 
@@ -209,7 +216,7 @@ int	zoom(int button, int x, int y, void* param)
 	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
 	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
 	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
-	draw(vars, julia, vars->colorange[vars->scheme]);
+	draw(vars, mandelbrot, vars->colorange[vars->scheme]);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
 }
@@ -235,11 +242,8 @@ void	init(t_vars *vars)
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
 	vars->scheme = 0;
-	vars->colorange[0] = 0xcdd6f4;
-	vars->colorange[1] = 0xcad3f5;
-	vars->colorange[2] = 0xc6d0f5;
 
-	draw(vars, burn, vars->colorange[vars->scheme]);
+	draw(vars, mandelbrot, vars->colorange[vars->scheme]);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
 	mlx_hook(vars->win, 17, 0, close_x, (void *) vars);
