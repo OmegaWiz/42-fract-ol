@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/17 12:15:42 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/17 12:41:55 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ typedef struct s_vars {
 	t_z		mn;
 	t_z		mx;
 	t_z		mi;
+	int		scheme;
+	int	colorange[3];
 }	t_vars;
+
 
 #endif

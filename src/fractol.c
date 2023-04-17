@@ -31,13 +31,73 @@ void	my_mlx_pixel_put(t_data *data, t_z px, int color)
 	*(unsigned int *)dst = color;
 }
 
+int	julia(t_z c, t_z z)
+{
+	int	i;
+	t_z	k;
+	t_z	l;
+
+	i = 1;
+	k.x = c.x;
+	k.y = c.y;
+	while (i < 80)
+	{
+		l.x = (k.x * k.x) - (k.y * k.y) + z.x;
+		l.y = (2 * k.x * k.y) + z.y;
+		k.x = l.x;
+		k.y = l.y;
+		if ((k.x * k.x) + (k.y * k.y) > 4)
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
+int	cursed_julia(t_z c, t_z z)
+{
+	int	i;
+	t_z	k;
+
+	i = 1;
+	k.x = c.x;
+	k.y = c.y;
+	while (i < 80)
+	{
+		k.x = (k.x * k.x) - (k.y * k.y) + z.x;
+		k.y = (2 * k.x * k.y) + z.y;
+		if ((k.x * k.x) + (k.y * k.y) > 4)
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
+int	burn(t_z c, t_z z)
+{
+	int	i;
+	t_z	k;
+
+	i = 1;
+	while (i < 80)
+	{
+		k.x = (z.x * z.x) - (z.y * z.y) + c.x;
+		k.y = -fabs(2 * z.x * z.y) + c.y;
+		if ((k.x * k.x) + (k.y * k.y) > 4)
+			return (i);
+		z.x = k.x;
+		z.y = k.y;
+		i++;
+	}
+	return (0);
+}
+
 int	mandelbrot(t_z c, t_z z)
 {
 	int	i;
 	t_z	k;
 
 	i = 1;
-	while (i < 50)
+	while (i < 80)
 	{
 		k.x = (z.x * z.x) - (z.y * z.y) + c.x;
 		k.y = (2 * z.x * z.y) + c.y;
@@ -119,7 +179,7 @@ int	close_esc(int keycode, void* param)
 			vars->mn.y += sz.y * mult;
 			vars->mx.y += sz.y * mult;
 		}
-		draw(vars, mandelbrot, 0xcdd6f4);
+		draw(vars, julia, vars->colorange[vars->scheme]);
 		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
 	return (0);
@@ -149,7 +209,7 @@ int	zoom(int button, int x, int y, void* param)
 	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
 	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
 	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
-	draw(vars, mandelbrot, 0xcdd6f4);
+	draw(vars, julia, vars->colorange[vars->scheme]);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
 }
@@ -174,7 +234,12 @@ void	init(t_vars *vars)
 	vars->mx.x = (vars->mx.y) * (WIN_WIDTH / WIN_HEIGHT);
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
-	draw(vars, mandelbrot, 0xcdd6f4);
+	vars->scheme = 0;
+	vars->colorange[0] = 0xcdd6f4;
+	vars->colorange[1] = 0xcad3f5;
+	vars->colorange[2] = 0xc6d0f5;
+
+	draw(vars, burn, vars->colorange[vars->scheme]);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
 	mlx_hook(vars->win, 17, 0, close_x, (void *) vars);
@@ -197,7 +262,7 @@ int	main(int argc, char **argv)
 		init(&vars);
 	else if (strcmp(argv[1], "julia") == 0)
 	{
-		printf("Sorry, the Julia set is not available right now, please come back soon.\n");
+		init(&vars);
 	}
 	else
 	{
