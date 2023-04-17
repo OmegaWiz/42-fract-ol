@@ -97,7 +97,7 @@ int	mandelbrot(t_z c, t_z z)
 	t_z	k;
 
 	i = 1;
-	while (i < 80)
+	while (i < MAX_ITER)
 	{
 		k.x = (z.x * z.x) - (z.y * z.y) + c.x;
 		k.y = (2 * z.x * z.y) + c.y;
@@ -128,7 +128,7 @@ void	draw(t_vars *vars, int (*iter)(t_z, t_z))
 			c.y += vars->mn.y;
 			color = iter(c, vars->mi);
 			if (color > 0)
-				color = vars->scheme / color;
+				color = vars->scheme[vars->color] * color / MAX_ITER;
 			my_mlx_pixel_put(&(vars->img), p, color);
 			p.y++;
 		}
@@ -149,7 +149,7 @@ int	close_x(void* param)
 123-126
 lrud
 */
-int	close_esc(int keycode, void* param)
+int	keyb(int keycode, void* param)
 {
 	t_vars	*vars;
 	t_z		sz;
@@ -179,14 +179,14 @@ int	close_esc(int keycode, void* param)
 			vars->mn.y += sz.y * mult;
 			vars->mx.y += sz.y * mult;
 		}
-		draw(vars, julia, vars->colorange[vars->scheme]);
+		draw(vars, mandelbrot);
 		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
 	if (keycode == 45)
 	{
-		vars->scheme++;
-		vars->scheme %= 3;
-		draw(vars, mandelbrot, vars->colorange[vars->scheme]);
+		vars->color = (vars->color + 1) % 6;
+		printf("%d %x\n", vars->color, vars->scheme[vars->color]);
+		draw(vars, mandelbrot);
 		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
 	return (0);
@@ -216,7 +216,7 @@ int	zoom(int button, int x, int y, void* param)
 	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
 	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
 	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
-	draw(vars, mandelbrot, vars->colorange[vars->scheme]);
+	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
 }
@@ -241,13 +241,14 @@ void	init(t_vars *vars)
 	vars->mx.x = (vars->mx.y) * (WIN_WIDTH / WIN_HEIGHT);
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
-	vars->scheme = 0;
+	vars->scheme = (int [6]){0xcdd6f4, 0xcad3f5, 0xc6d0f5, 0xff0000, 0x00ff00, 0x0000ff};
+	vars->color = 0;
 
-	draw(vars, mandelbrot, vars->colorange[vars->scheme]);
+	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
 	mlx_hook(vars->win, 17, 0, close_x, (void *) vars);
-	mlx_key_hook(vars->win, close_esc, (void *) vars);
+	mlx_key_hook(vars->win, keyb, (void *) vars);
 	mlx_mouse_hook(vars->win, zoom, (void *) vars);
 	mlx_loop(vars->mlx);
 }
