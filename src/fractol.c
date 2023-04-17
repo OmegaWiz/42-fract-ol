@@ -110,7 +110,7 @@ int	mandelbrot(t_z c, t_z z)
 	return (0);
 }
 
-void	draw(t_vars *vars, int (*iter)(t_z, t_z))
+void	draw(t_vars *vars)
 {
 	t_z		p;
 	t_z		c;
@@ -126,7 +126,7 @@ void	draw(t_vars *vars, int (*iter)(t_z, t_z))
 			c.y = (WIN_HEIGHT - p.y) / WIN_HEIGHT;
 			c.y *= (vars->mx.y - vars->mn.y);
 			c.y += vars->mn.y;
-			color = iter(c, vars->mi);
+			color = vars->iter(c, vars->mi);
 			if (color > 0)
 				color = vars->scheme[vars->color] * color / MAX_ITER;
 			my_mlx_pixel_put(&(vars->img), p, color);
@@ -179,14 +179,14 @@ int	keyb(int keycode, void* param)
 			vars->mn.y += sz.y * mult;
 			vars->mx.y += sz.y * mult;
 		}
-		draw(vars, mandelbrot);
+		draw(vars);
 		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
 	if (keycode == 45)
 	{
 		vars->color = (vars->color + 1) % 6;
 		printf("%d %x\n", vars->color, vars->scheme[vars->color]);
-		draw(vars, mandelbrot);
+		draw(vars);
 		mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	}
 	return (0);
@@ -216,7 +216,7 @@ int	zoom(int button, int x, int y, void* param)
 	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
 	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
 	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
-	draw(vars, mandelbrot);
+	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	return (0);
 }
@@ -226,7 +226,7 @@ int	do_none(void *data)
 	return (0);
 }
 
-void	init(t_vars *vars)
+void	init(t_vars *vars, int (*iter)(t_z, t_z), t_z mi)
 {
 	t_data	*d;
 
@@ -235,16 +235,17 @@ void	init(t_vars *vars)
 	d = &(vars->img);
 	d->img = mlx_new_image(vars->mlx, WIN_WIDTH, WIN_HEIGHT);
 	d->addr = mlx_get_data_addr(d->img, &(d->bpp), &(d->line_len), &(d->end));
-	vars->mi.x = 0;
-	vars->mi.y = 0;
+	vars->mi.x = mi.x;
+	vars->mi.y = mi.y;
 	vars->mx.y = 2;
 	vars->mx.x = (vars->mx.y) * (WIN_WIDTH / WIN_HEIGHT);
 	vars->mn.x = vars->mx.x * -1;
 	vars->mn.y = vars->mx.y * -1;
 	vars->scheme = (int [6]){0xcdd6f4, 0xcad3f5, 0xc6d0f5, 0xff0000, 0x00ff00, 0x0000ff};
 	vars->color = 0;
+	vars->iter = iter;
 
-	draw(vars, mandelbrot);
+	draw(vars);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
 	mlx_loop_hook(vars->mlx, do_none, (void *) vars);
 	mlx_hook(vars->win, 17, 0, close_x, (void *) vars);
@@ -253,25 +254,53 @@ void	init(t_vars *vars)
 	mlx_loop(vars->mlx);
 }
 
+void	print_man(void)
+{
+	ft_putstr_fd("\033[96mUsage:\033[32m\n", 1);
+	ft_putstr_fd("> ./fractol <fractal:uint> <*re:int> <*im:int>\033[0m\n", 1);
+	ft_putstr_fd("	fractal: fractol type (0 = Mandelbrot, 1 = Burning ship, 2 = Julia, 3 = Broken Julia)\n", 1);
+	ft_putstr_fd("	re(al): real coordinate for julia set (*1000) [-2000, 2000]\n", 1);
+	ft_putstr_fd("	im(aginary): imaginary coordinate for julia set (*1000) [-2000, 2000]\n\n", 1);
+	ft_putstr_fd("\033[96mKey bindings:\033[0m\n", 1);
+	ft_putstr_fd("	[Arrow keys]: Pans the camera\n", 1);
+	ft_putstr_fd("	[Scrollwheel]: Zooms in and out\n", 1);
+	ft_putstr_fd("	[N]: Change color scheme\n", 1);
+	ft_putstr_fd("	[Esc]: Exit application.\n\n\033[93m", 1);
+	ft_putstr_fd("\033[0m\n", 1);
+	exit(1);
+}
+
 int	main(int argc, char **argv)
 {
 	t_vars	vars;
+	t_z		mi;
 
-	//init
+	if (argc == 2)
+	{
+		mi.x = 0;
+		mi.y = 0;
+		if (strcmp(argv[1], "0") == 0)
+			init(&vars, mandelbrot, mi);
+		else if (strcmp(argv[1], "1") == 0)
+			init(&vars, burn, mi);
+		else
+			print_man();
+	}
+	if (argc == 4)
+	{
+		mi.x = (float) atoi(argv[2]) / 1000.0;
+		mi.y = (float) atoi(argv[3]) / 1000.0;
+		printf("%f %f\n", mi.x, mi.y);
+		if (-2 > mi.x || -2 > mi.y || 2 < mi.x || 2 < mi.y)
+			print_man();
+		if (strcmp(argv[1], "2") == 0)
+			init(&vars, julia, mi);
+		else if (strcmp(argv[1], "3") == 0)
+			init(&vars, cursed_julia, mi);
+		else
+			print_man();
+	}
 	if (argc != 2)
-	{
-		printf("Incorrect number of parameters. Correct format is `./fractol {fractol type}`\n");
-		return (0);
-	}
-	if (strcmp(argv[1], "mandelbrot") == 0)
-		init(&vars);
-	else if (strcmp(argv[1], "julia") == 0)
-	{
-		init(&vars);
-	}
-	else
-	{
-		printf("Sorry, we currently do not offer said set. The available set is either mandelbrot or julia.\n");
-	}
+		print_man();
 	return (0);
 }
