@@ -39,9 +39,9 @@ int	mandelbrot(t_z c, t_z z)
 	i = 1;
 	while (i < 30)
 	{
-		k.x = pow(z.x, 2) - pow(z.y, 2) + c.x;
+		k.x = (z.x * z.x) - (z.y * z.y) + c.x;
 		k.y = (2 * z.x * z.y) + c.y;
-		if (pow(k.x, 2) + pow(k.y, 2) > 4)
+		if ((k.x * k.x) + (k.y * k.y) > 4)
 			return (i);
 		z.x = k.x;
 		z.y = k.y;
@@ -108,22 +108,25 @@ int	zoom(int button, int x, int y, void* param)
 	float	zoomidx;
 	t_z		cen;
 	t_z		sz;
+	t_z		mouse;
 	t_vars	*vars;
 
 	vars = (t_vars *) param;
-	if (button != 1 && button != 2)
+	if (button != 4 && button != 5)
 		return (0);
 	zoomidx = 1;
-	if (button == 1)
+	if (button == 4)
 		zoomidx = 1.1;
-	if (button == 2)
+	if (button == 5)
 		zoomidx = 0.9;
 	printf("Clicked: %d\n", button);
 	printf("%f %f|%f,%f|%f\n", zoomidx, vars->mn.x, vars->mx.x, vars->mn.y, vars->mx.y);
-	cen.x = (vars->mx.x + vars->mn.x) / 2;
-	cen.y = (vars->mx.y + vars->mn.y) / 2;
 	sz.x = (vars->mx.x - vars->mn.x) / 2;
 	sz.y = (vars->mx.y - vars->mn.y) / 2;
+	mouse.x = vars->mn.x + ((float) x / WIN_WIDTH);
+	mouse.y = vars->mn.x + ((float) y / WIN_HEIGHT);
+	cen.x = (vars->mx.x + vars->mn.x) / 2;
+	cen.y = (vars->mx.y + vars->mn.y) / 2;
 	vars->mx.x = cen.x + (sz.x * zoomidx);
 	vars->mx.y = cen.y + (sz.y * zoomidx);
 	vars->mn.x = cen.x - (sz.x * zoomidx);
