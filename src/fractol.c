@@ -37,7 +37,7 @@ int	mandelbrot(t_z c, t_z z)
 	t_z	k;
 
 	i = 1;
-	while (i < 30)
+	while (i < 50)
 	{
 		k.x = (z.x * z.x) - (z.y * z.y) + c.x;
 		k.y = (2 * z.x * z.y) + c.y;
@@ -106,31 +106,26 @@ int	close_esc(int keycode, void* param)
 int	zoom(int button, int x, int y, void* param)
 {
 	float	zoomidx;
+	t_vars	*vars;
+	t_z		mouse;
+
 	t_z		cen;
 	t_z		sz;
-	t_z		mouse;
-	t_vars	*vars;
 
 	vars = (t_vars *) param;
+	printf("Clicked: %d\n", button);
 	if (button != 4 && button != 5)
 		return (0);
-	zoomidx = 1;
 	if (button == 4)
 		zoomidx = 1.1;
 	if (button == 5)
 		zoomidx = 0.9;
-	printf("Clicked: %d\n", button);
-	printf("%f %f|%f,%f|%f\n", zoomidx, vars->mn.x, vars->mx.x, vars->mn.y, vars->mx.y);
-	sz.x = (vars->mx.x - vars->mn.x) / 2;
-	sz.y = (vars->mx.y - vars->mn.y) / 2;
-	mouse.x = vars->mn.x + ((float) x / WIN_WIDTH);
-	mouse.y = vars->mn.x + ((float) y / WIN_HEIGHT);
-	cen.x = (vars->mx.x + vars->mn.x) / 2;
-	cen.y = (vars->mx.y + vars->mn.y) / 2;
-	vars->mx.x = cen.x + (sz.x * zoomidx);
-	vars->mx.y = cen.y + (sz.y * zoomidx);
-	vars->mn.x = cen.x - (sz.x * zoomidx);
-	vars->mn.y = cen.y - (sz.y * zoomidx);
+	mouse.x = vars->mn.x + (float)x / (float)WIN_WIDTH * (vars->mx.x - vars->mn.x);
+	mouse.y = vars->mn.y + (float)y / (float)WIN_HEIGHT * (vars->mx.y - vars->mn.y);
+	vars->mn.x = mouse.x - (zoomidx * (mouse.x - vars->mn.x));
+	vars->mx.x = mouse.x + (zoomidx * (vars->mx.x - mouse.x));
+	vars->mn.y = mouse.y - (zoomidx * (mouse.y - vars->mn.y));
+	vars->mx.y = mouse.y + (zoomidx * (vars->mx.y - mouse.y));
 	printf("%f %f|%f|%f|%f,%f|%f|%f|%f\n", zoomidx, vars->mn.x, vars->mx.x, cen.x, sz.x, vars->mn.y, vars->mx.y, cen.y, sz.y);
 	draw(vars, mandelbrot);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->img.img, 0, 0);
