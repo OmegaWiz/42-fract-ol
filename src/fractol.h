@@ -6,7 +6,7 @@
 /*   By: kkaiyawo <kkaiyawo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 16:02:41 by kkaiyawo          #+#    #+#             */
-/*   Updated: 2023/04/14 12:27:51 by kkaiyawo         ###   ########.fr       */
+/*   Updated: 2023/04/17 12:15:42 by kkaiyawo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <math.h>
 
 # include<stdio.h>
+# include<string.h>
 
 # include "../mlx/mlx.h"
 # include "../lib/libft/libft.h"

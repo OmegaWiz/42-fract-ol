@@ -188,9 +188,20 @@ int	main(int argc, char **argv)
 	t_vars	vars;
 
 	//init
-	(void) argc;
-	(void) argv;
-	init(&vars);
-	//load mandelbrot
+	if (argc != 2)
+	{
+		printf("Incorrect number of parameters. Correct format is `./fractol {fractol type}`\n");
+		return (0);
+	}
+	if (strcmp(argv[1], "mandelbrot") == 0)
+		init(&vars);
+	else if (strcmp(argv[1], "julia") == 0)
+	{
+		printf("Sorry, the Julia set is not available right now, please come back soon.\n");
+	}
+	else
+	{
+		printf("Sorry, we currently do not offer said set. The available set is either mandelbrot or julia.\n");
+	}
 	return (0);
 }
